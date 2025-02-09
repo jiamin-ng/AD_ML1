@@ -36,7 +36,7 @@ def predict():
         "Digger Bee"
     ]
 
-    MIN_CONFIDENCE = 0.6
+    MIN_CONFIDENCE = 0.7
 
     for box in results[0].boxes:
         class_id = int(box.cls.item())

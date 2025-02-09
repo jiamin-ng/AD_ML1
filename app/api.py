@@ -11,6 +11,11 @@ app = Flask(__name__)
 model = YOLO("app/model/best.pt")
 
 
+@app.route("/")
+def home():
+    return "API is running", 200
+
+
 @app.route("/predict", methods=["POST"])
 def predict():
     if "image" not in request.files:

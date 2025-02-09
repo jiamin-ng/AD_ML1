@@ -65,5 +65,5 @@ jobs:
             docker pull registry.digitalocean.com/yolo-api/yolo-flask-api:latest
             docker stop yolo-api || true
             docker rm yolo-api || true
-            docker run -d -p 5001:5001 --name yolo-api --restart unless-stopped \
+            docker run -d -p 5000:5000 --name yolo-api --restart unless-stopped \
             registry.digitalocean.com/yolo-api/yolo-flask-api:latest

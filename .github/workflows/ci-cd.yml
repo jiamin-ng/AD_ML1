@@ -44,10 +44,10 @@ jobs:
         run: echo "${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}" | docker login registry.digitalocean.com -u do --password-stdin
 
       - name: Build Docker Image
-        run: docker build -t registry.digitalocean.com/yolo-api/yolo-flask-api:latest .
+        run: docker build -t registry.digitalocean.com/ml-cnn/yolo-flask-api:latest .
 
       - name: Push Image to DigitalOcean Container Registry
-        run: docker push registry.digitalocean.com/yolo-api/yolo-flask-api:latest
+        run: docker push registry.digitalocean.com/ml-cnn/yolo-flask-api:latest
 
   # Deploy to DigitalOcean
   deploy:
@@ -62,8 +62,8 @@ jobs:
           key: ${{ secrets.DO_SSH_KEY }}
           script: |
             docker login registry.digitalocean.com -u do --password=${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
-            docker pull registry.digitalocean.com/yolo-api/yolo-flask-api:latest
+            docker pull registry.digitalocean.com/ml-cnn/yolo-flask-api:latest
             docker stop yolo-api || true
             docker rm yolo-api || true
             docker run -d -p 5000:5000 --name yolo-api --restart unless-stopped \
-            registry.digitalocean.com/yolo-api/yolo-flask-api:latest
+            registry.digitalocean.com/ml-cnn/yolo-flask-api:latest

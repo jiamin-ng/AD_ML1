@@ -4,10 +4,12 @@ import cv2
 import numpy as np
 from ultralytics import YOLO
 
+
 app = Flask(__name__)
 
 # Load YOLO model
 model = YOLO("app/model/best.pt")
+
 
 @app.route("/predict", methods=["POST"])
 def predict():
@@ -49,6 +51,7 @@ def predict():
         })
 
     return jsonify({"detections": detections})
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5001)

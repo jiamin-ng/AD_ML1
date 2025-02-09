@@ -40,30 +40,30 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Log in to GitHub Container Registry (GHCR)
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u USERNAME --password-stdin
+      - name: Log in to DigitalOcean Container Registry
+        run: echo "${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}" | docker login registry.digitalocean.com -u do --password-stdin
 
       - name: Build Docker Image
-        run: docker build -t ghcr.io/YOUR_USERNAME/yolo-flask-api:latest .
+        run: docker build -t registry.digitalocean.com/yolo-api/yolo-flask-api:latest .
 
-      - name: Push Image to GitHub Container Registry
-        run: docker push ghcr.io/YOUR_USERNAME/yolo-flask-api:latest
+      - name: Push Image to DigitalOcean Container Registry
+        run: docker push registry.digitalocean.com/yolo-api/yolo-flask-api:latest
 
-  # Deploy to DigitalOcean via SSH
+  # Deploy to DigitalOcean
   deploy:
     needs: build_and_push
     runs-on: ubuntu-latest
     steps:
-      - name: SSH into DigitalOcean & Deploy
+      - name: Deploy to DigitalOcean Droplet
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.DO_HOST }}
+          host: ${{ secrets.DO_DROPLET_IP }}
           username: ${{ secrets.DO_USER }}
           key: ${{ secrets.DO_SSH_KEY }}
           script: |
-            cd /root/yolo-flask-api
-            git pull origin main
-            docker pull ghcr.io/YOUR_USERNAME/yolo-flask-api:latest
+            docker login registry.digitalocean.com -u do --password=${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+            docker pull registry.digitalocean.com/yolo-api/yolo-flask-api:latest
             docker stop yolo-api || true
             docker rm yolo-api || true
-            docker run -d -p 5001:5001 --name yolo-api ghcr.io/YOUR_USERNAME/yolo-flask-api:latest
+            docker run -d -p 5001:5001 --name yolo-api --restart unless-stopped \
+            registry.digitalocean.com/yolo-api/yolo-flask-api:latest

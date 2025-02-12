@@ -67,4 +67,28 @@ jobs:
             docker rm yolo-api || true
             docker run -d -p 5000:5000 --name yolo-api --restart unless-stopped \
             registry.digitalocean.com/ml-cnn/yolo-flask-api:latest
+
+  # Dynamic Application Security Testing (DAST)
+  dast-scan:
+    name: Dynamic Security Analysis (DAST)
+    needs: deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check Docker Installation
+        run: docker --version
+
+      - name: Manually Pull OWASP ZAP Docker Image
+        run: docker pull ghcr.io/zaproxy/zaproxy:weekly
+
+      - name: Run OWASP ZAP API Security Scan
+        run: |
+          docker run --user root -v $(pwd):/zap/wrk -t ghcr.io/zaproxy/zaproxy:weekly \
+          zap-full-scan.py -t http://${{ secrets.DO_DROPLET_IP }}:5000 -r /zap/wrk/zap-api-report.html || true
+
+      - name: Upload ZAP Report as Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: DAST-ZAP-Report
+          path: zap-api-report.html
             

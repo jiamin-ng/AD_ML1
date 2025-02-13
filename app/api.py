@@ -30,14 +30,14 @@ def predict():
     detections = []
 
     class_names = [
-        "Malaysian Water Monitor Lizard",
-        "Clouded Monitor Lizard",
-        "Dumeril's Monitor Lizard",
+        "Malayan Water Monitor Lizards",
+        "Cloud Monitor Lizards",
+        "Dumerils Monitor Lizards",
         "Basket Stinkhorn",
         "Bracket Fungi",
-        "Geastrum Triplex",
-        "Asian Hornet",
-        "Giant Honey Bee",
+        "Collared Earthstar",
+        "Asian Hornets",
+        "Giant Honey Bees",
         "Digger Bee"
     ]
 
